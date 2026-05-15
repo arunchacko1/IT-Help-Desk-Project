@@ -3,7 +3,9 @@ const path = require("path");
 const sqlite3 = require("sqlite3");
 const { open } = require("sqlite");
 
-const dataDir = path.join(__dirname, "..", "..", "data");
+const dataDir = process.env.VERCEL
+  ? path.join("/tmp", "helpdesk-data")
+  : path.join(__dirname, "..", "..", "data");
 const dbPath = path.join(dataDir, "helpdesk.sqlite");
 const schemaPath = path.join(__dirname, "schema.sql");
 

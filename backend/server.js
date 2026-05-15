@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const { initializeSchema } = require("./src/db/connection");
+const { getDb } = require("./src/db/connection");
+const { ensureDemoData } = require("./src/db/demoData");
 const ticketRoutes = require("./src/routes/tickets");
 const technicianRoutes = require("./src/routes/technicians");
 const reportRoutes = require("./src/routes/reports");
@@ -25,6 +27,7 @@ app.use(errorHandler);
 
 async function startServer(selectedPort = port) {
   await initializeSchema();
+  await ensureDemoData(await getDb());
   return app.listen(selectedPort, () => {
     console.log(`Help desk API running on http://localhost:${selectedPort}`);
   });
@@ -37,7 +40,13 @@ if (require.main === module) {
   });
 }
 
-module.exports = {
-  app,
-  startServer
-};
+if (require.main !== module) {
+  initializeSchema()
+    .then(async () => ensureDemoData(await getDb()))
+    .catch((error) => {
+      console.error("Failed to initialize database", error);
+    });
+}
+
+module.exports = app;
+module.exports.startServer = startServer;

@@ -4,3 +4,5 @@ dist/
 *.log
 backend/data/*.sqlite
 backend/data/*.sqlite-journal
+
+.vercel

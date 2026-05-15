@@ -1,4 +1,8 @@
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000/api";
+const localHosts = ["localhost", "127.0.0.1"];
+const isLocalBrowser =
+  typeof window !== "undefined" && localHosts.includes(window.location.hostname);
+const API_BASE =
+  import.meta.env.VITE_API_BASE_URL || (isLocalBrowser ? "http://localhost:4000/api" : "/_/backend/api");
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
