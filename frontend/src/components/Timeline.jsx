@@ -1,3 +1,4 @@
+import React from "react";
 import { formatDateTime } from "../format.js";
 
 export default function Timeline({ activity }) {

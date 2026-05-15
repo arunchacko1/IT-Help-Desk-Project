@@ -1,3 +1,4 @@
+import React from "react";
 import PriorityBadge from "./PriorityBadge.jsx";
 import StatusBadge from "./StatusBadge.jsx";
 import SlaBadge from "./SlaBadge.jsx";

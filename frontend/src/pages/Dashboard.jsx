@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "../api/client.js";
 import TicketTable from "../components/TicketTable.jsx";
 

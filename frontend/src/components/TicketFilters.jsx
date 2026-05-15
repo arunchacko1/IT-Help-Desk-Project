@@ -1,3 +1,4 @@
+import React from "react";
 import { categories, priorities, statuses } from "../constants.js";
 
 export default function TicketFilters({ filters, technicians, onChange, onReset }) {
