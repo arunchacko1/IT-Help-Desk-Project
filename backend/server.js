@@ -10,9 +10,25 @@ const { notFound, errorHandler } = require("./src/middleware/errorHandler");
 
 const app = express();
 const port = process.env.PORT || 4000;
+let readyPromise;
+
+function ensureReady() {
+  if (!readyPromise) {
+    readyPromise = initializeSchema().then(async () => ensureDemoData(await getDb()));
+  }
+  return readyPromise;
+}
 
 app.use(cors());
 app.use(express.json());
+app.use(async (req, res, next) => {
+  try {
+    await ensureReady();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
 app.get("/api/health", (req, res) => {
   res.json({ data: { status: "ok" } });
@@ -26,8 +42,7 @@ app.use(notFound);
 app.use(errorHandler);
 
 async function startServer(selectedPort = port) {
-  await initializeSchema();
-  await ensureDemoData(await getDb());
+  await ensureReady();
   return app.listen(selectedPort, () => {
     console.log(`Help desk API running on http://localhost:${selectedPort}`);
   });
@@ -38,14 +53,6 @@ if (require.main === module) {
     console.error("Failed to initialize database", error);
     process.exit(1);
   });
-}
-
-if (require.main !== module) {
-  initializeSchema()
-    .then(async () => ensureDemoData(await getDb()))
-    .catch((error) => {
-      console.error("Failed to initialize database", error);
-    });
 }
 
 module.exports = app;
